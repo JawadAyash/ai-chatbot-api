@@ -27,3 +27,10 @@ POST /api/auth/register
 POST /api/auth/login
 POST /api/chat
 GET /api/chat/:id
+
+## Updates
+
+- Added system prompt design
+- Improved intent classifier (JSON output)
+- Added conversation history support
+- OpenAI integration improved
