@@ -29,10 +29,7 @@ exports.sendMessage = async (req, res) => {
     // escalation rule
     let escalated = false;
 
-    if (
-  intent === "complaint" ||
-  intent === "refund"
-) {
+    if (intent === "complaint" || intent === "refund") {
       escalated = true;
       conversation.escalated = true;
       await conversation.save();
@@ -48,9 +45,10 @@ exports.sendMessage = async (req, res) => {
 
     // generate reply
     const reply = await generateReply(
-     message,
-     intent,
-     conversation._id
+      message,
+      intent,
+      conversation._id,
+      req.userRole || "user"
     );
 
     // save bot message
@@ -71,6 +69,7 @@ exports.sendMessage = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 exports.getConversation = async (req, res) => {
   try {
     const { id } = req.params;

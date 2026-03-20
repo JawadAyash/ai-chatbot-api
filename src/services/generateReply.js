@@ -1,12 +1,30 @@
 const openai = require("../config/openai");
 const Message = require("../models/Message");
 
-const generateReply = async (message, intent, conversationId) => {
+const generateReply = async (message, intent, conversationId, role = "user") => {
   const history = await Message.find({
     conversation: conversationId,
   })
     .sort({ createdAt: 1 })
     .limit(10);
+
+  const roleInstructions = {
+    user: `
+- Explain things simply
+- Use customer-friendly language
+- Focus on practical next steps
+`,
+    support: `
+- Respond like an internal support assistant
+- Be more structured and operational
+- Include troubleshooting-style guidance when useful
+`,
+    admin: `
+- Respond with more detailed and structured information
+- Be concise but strategic
+- Highlight process or policy implications when relevant
+`,
+  };
 
   const systemPrompt = `
 You are a professional AI customer support assistant.
@@ -27,6 +45,10 @@ Rules:
 - Keep replies practical and easy to understand
 
 Current intent: ${intent}
+Current user role: ${role}
+
+Role-specific behavior:
+${roleInstructions[role] || roleInstructions.user}
 `;
 
   const messages = [
