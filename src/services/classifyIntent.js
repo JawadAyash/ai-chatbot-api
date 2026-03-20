@@ -2,17 +2,20 @@ const openai = require("../config/openai");
 
 const classifyIntent = async (message) => {
   const prompt = `
-Classify the user message into one of these intents:
+You are an intent classifier.
 
+Possible intents:
 - refund
 - order_status
 - complaint
-- general_question
 - greeting
+- general
 
-Message: "${message}"
+Return ONLY JSON in this format:
+{ "intent": "refund" }
 
-Return only the intent name.
+Message:
+"${message}"
 `;
 
   const response = await openai.chat.completions.create({
@@ -23,9 +26,18 @@ Return only the intent name.
         content: prompt,
       },
     ],
+    temperature: 0,
   });
 
-  return response.choices[0].message.content.trim();
+  const text = response.choices[0].message.content;
+
+  try {
+    const json = JSON.parse(text);
+    return json.intent;
+  } catch (err) {
+    console.log("Intent parse error:", text);
+    return "general";
+  }
 };
 
 module.exports = classifyIntent;
