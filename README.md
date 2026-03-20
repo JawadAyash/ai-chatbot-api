@@ -1,14 +1,15 @@
 # AI Chatbot API
 
-AI-powered customer support chatbot built with Node.js, MongoDB, and OpenAI.
+AI-powered chatbot backend built with Node.js, MongoDB, and OpenAI.
 
 ## Features
 
 - JWT authentication
 - Intent classification
-- AI reply generation
+- AI response generation
 - Conversation history
 - Escalation rules
+- Protected routes
 - MongoDB storage
 
 ## Tech
@@ -22,7 +23,7 @@ JWT
 
 ## Endpoints
 
-POST /api/auth/register  
-POST /api/auth/login  
-POST /api/chat  
+POST /api/auth/register
+POST /api/auth/login
+POST /api/chat
 GET /api/chat/:id

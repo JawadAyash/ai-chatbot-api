@@ -29,7 +29,10 @@ exports.sendMessage = async (req, res) => {
     // escalation rule
     let escalated = false;
 
-    if (intent === "complaint") {
+    if (
+  intent === "complaint" ||
+  intent === "refund"
+) {
       escalated = true;
       conversation.escalated = true;
       await conversation.save();
@@ -44,7 +47,11 @@ exports.sendMessage = async (req, res) => {
     });
 
     // generate reply
-    const reply = await generateReply(message, intent);
+    const reply = await generateReply(
+     message,
+     intent,
+     conversation._id
+    );
 
     // save bot message
     await Message.create({
@@ -67,6 +74,16 @@ exports.sendMessage = async (req, res) => {
 exports.getConversation = async (req, res) => {
   try {
     const { id } = req.params;
+
+    const conversation = await Conversation.findById(id);
+
+    if (!conversation) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    if (conversation.user.toString() !== req.userId) {
+      return res.status(403).json({ message: "Not allowed" });
+    }
 
     const messages = await Message.find({
       conversation: id,
