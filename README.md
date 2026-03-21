@@ -1,46 +1,119 @@
-# AI Chatbot API
+# AI Chatbot API (RAG + Semantic Search + Admin Knowledge)
 
-AI-powered chatbot backend built with Node.js, MongoDB, and OpenAI.
+Backend API for an AI-powered customer support chatbot using Node.js, MongoDB, and OpenAI.
+
+This project demonstrates a production-style architecture including authentication, role-based AI behavior, Retrieval-Augmented Generation (RAG), semantic search with embeddings, and admin-controlled knowledge management.
+
+---
 
 ## Features
 
-- JWT authentication
-- Intent classification
-- AI response generation
-- Conversation history
+- JWT Authentication
+- Protected API routes
+- Role-based AI responses (user / support / admin)
+- Intent classification using OpenAI
+- Conversation history storage
 - Escalation rules
-- Protected routes
-- MongoDB storage
+- Retrieval-Augmented Generation (RAG)
+- Chunk-based knowledge storage
+- Semantic retrieval with embeddings
+- Admin knowledge management API
+- MongoDB + Mongoose models
+- Clean service/controller architecture
 
-## Tech
+---
 
-Node.js
-Express
-MongoDB
-Mongoose
-OpenAI API
-JWT
+## Tech Stack
 
-## Endpoints
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- OpenAI API
+- JWT
+- bcryptjs
 
-POST /api/auth/register
+---
+
+## API Routes
+
+### Auth
+
+POST /api/auth/register  
 POST /api/auth/login
-POST /api/chat
+
+### Chat
+
+POST /api/chat  
 GET /api/chat/:id
 
-## Updates
+### Knowledge (Admin only)
 
-- Added system prompt design
-- Improved intent classifier (JSON output)
-- Added conversation history support
-- OpenAI integration improved
+GET /api/knowledge  
+POST /api/knowledge  
+PUT /api/knowledge/:id  
+DELETE /api/knowledge/:id
 
-## RAG Support
+---
 
-This chatbot now supports Retrieval Augmented Generation (RAG).
+## Project Structure
+src/
+config/
+controllers/
+middlewares/
+models/
+routes/
+services/
+utils/
+app.js
+server.js
 
-Features:
-- Knowledge base stored in MongoDB
-- Context retrieval using keyword search
-- Injected context into LLM prompt
-- Improved factual responses
+## Environment Variables
+
+Create `.env`
+
+PORT=5000
+MONGO_URI=your_mongo_uri
+JWT_SECRET=your_secret
+OPENAI_API_KEY=your_openai_key
+
+## Install
+
+npm install
+Run dev server
+npm run dev
+
+
+## Seed knowledge data
+
+npm run seed
+npm run seed:chunks
+npm run embed:chunks
+
+
+---
+
+## Architecture
+
+User → API → Intent → Retrieval → Context → OpenAI → Response
+
+- Knowledge stored as chunks
+- Embeddings generated for each chunk
+- Cosine similarity search
+- Context injected into prompt
+
+---
+
+## Status
+
+Project includes:
+
+✔ Authentication  
+✔ Role-based AI  
+✔ RAG  
+✔ Semantic search  
+✔ Admin routes  
+✔ Conversation memory  
+✔ OpenAI integration  
+
+This project is built for AI backend engineering practice.

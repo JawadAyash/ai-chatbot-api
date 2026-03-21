@@ -3,7 +3,7 @@ const Message = require("../models/Message");
 
 const classifyIntent = require("../services/classifyIntent");
 const generateReply = require("../services/generateReply");
-const retrieveContext = require("../services/retrieveContext");
+const retrieveSemanticContext = require("../services/retrieveSemanticContext");
 
 exports.sendMessage = async (req, res) => {
   try {
@@ -25,7 +25,7 @@ exports.sendMessage = async (req, res) => {
 
     const intent = await classifyIntent(message);
 
-    const retrievedDocs = await retrieveContext(message);
+    const retrievedDocs = await retrieveSemanticContext(message);
 
     let escalated = false;
 

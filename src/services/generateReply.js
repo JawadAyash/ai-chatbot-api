@@ -33,17 +33,18 @@ const generateReply = async (
   };
 
   const contextBlock =
-    retrievedDocs.length > 0
-      ? retrievedDocs
-          .map(
-            (doc, index) => `
-[Document ${index + 1}]
-Title: ${doc.title}
+  retrievedDocs.length > 0
+    ? retrievedDocs
+        .map(
+          (doc, index) => `
+[Chunk ${index + 1}]
+Source: ${doc.sourceTitle}
+Chunk Index: ${doc.chunkIndex}
 Content: ${doc.content}
 `
-          )
-          .join("\n")
-      : "No knowledge base context found.";
+        )
+        .join("\n")
+    : "No knowledge base context found.";
 
   const systemPrompt = `
 You are a professional AI customer support assistant.
