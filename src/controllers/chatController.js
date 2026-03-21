@@ -3,6 +3,7 @@ const Message = require("../models/Message");
 
 const classifyIntent = require("../services/classifyIntent");
 const generateReply = require("../services/generateReply");
+const retrieveContext = require("../services/retrieveContext");
 
 exports.sendMessage = async (req, res) => {
   try {
@@ -14,7 +15,6 @@ exports.sendMessage = async (req, res) => {
 
     let conversation;
 
-    // create or use existing conversation
     if (conversationId) {
       conversation = await Conversation.findById(conversationId);
     } else {
@@ -23,10 +23,10 @@ exports.sendMessage = async (req, res) => {
       });
     }
 
-    // classify intent
     const intent = await classifyIntent(message);
 
-    // escalation rule
+    const retrievedDocs = await retrieveContext(message);
+
     let escalated = false;
 
     if (intent === "complaint" || intent === "refund") {
@@ -35,7 +35,6 @@ exports.sendMessage = async (req, res) => {
       await conversation.save();
     }
 
-    // save user message
     await Message.create({
       conversation: conversation._id,
       sender: "user",
@@ -43,15 +42,14 @@ exports.sendMessage = async (req, res) => {
       intent,
     });
 
-    // generate reply
     const reply = await generateReply(
       message,
       intent,
       conversation._id,
-      req.userRole || "user"
+      req.userRole || "user",
+      retrievedDocs
     );
 
-    // save bot message
     await Message.create({
       conversation: conversation._id,
       sender: "bot",

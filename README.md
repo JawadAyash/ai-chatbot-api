@@ -34,3 +34,13 @@ GET /api/chat/:id
 - Improved intent classifier (JSON output)
 - Added conversation history support
 - OpenAI integration improved
+
+## RAG Support
+
+This chatbot now supports Retrieval Augmented Generation (RAG).
+
+Features:
+- Knowledge base stored in MongoDB
+- Context retrieval using keyword search
+- Injected context into LLM prompt
+- Improved factual responses

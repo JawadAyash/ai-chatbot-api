@@ -1,7 +1,13 @@
 const openai = require("../config/openai");
 const Message = require("../models/Message");
 
-const generateReply = async (message, intent, conversationId, role = "user") => {
+const generateReply = async (
+  message,
+  intent,
+  conversationId,
+  role = "user",
+  retrievedDocs = []
+) => {
   const history = await Message.find({
     conversation: conversationId,
   })
@@ -26,6 +32,19 @@ const generateReply = async (message, intent, conversationId, role = "user") => 
 `,
   };
 
+  const contextBlock =
+    retrievedDocs.length > 0
+      ? retrievedDocs
+          .map(
+            (doc, index) => `
+[Document ${index + 1}]
+Title: ${doc.title}
+Content: ${doc.content}
+`
+          )
+          .join("\n")
+      : "No knowledge base context found.";
+
   const systemPrompt = `
 You are a professional AI customer support assistant.
 
@@ -49,6 +68,12 @@ Current user role: ${role}
 
 Role-specific behavior:
 ${roleInstructions[role] || roleInstructions.user}
+
+Use the following knowledge base context when relevant:
+${contextBlock}
+
+If the knowledge base contains relevant information, prioritize it.
+If no relevant context is found, respond normally without inventing facts.
 `;
 
   const messages = [
